@@ -1,0 +1,13 @@
+C:\Users\barti\source\repos\Cars2D\Cars2D\bin\Debug\Cars2D.exe.config
+C:\Users\barti\source\repos\Cars2D\Cars2D\bin\Debug\Cars2D.exe
+C:\Users\barti\source\repos\Cars2D\Cars2D\bin\Debug\Cars2D.pdb
+C:\Users\barti\source\repos\Cars2D\Cars2D\obj\Debug\Cars2D.csprojAssemblyReference.cache
+C:\Users\barti\source\repos\Cars2D\Cars2D\obj\Debug\Cars2D.Properties.Resources.resources
+C:\Users\barti\source\repos\Cars2D\Cars2D\obj\Debug\Cars2D.csproj.GenerateResource.cache
+C:\Users\barti\source\repos\Cars2D\Cars2D\obj\Debug\Cars2D.csproj.CoreCompileInputs.cache
+C:\Users\barti\source\repos\Cars2D\Cars2D\obj\Debug\Cars2D.exe
+C:\Users\barti\source\repos\Cars2D\Cars2D\obj\Debug\Cars2D.pdb
+C:\Users\barti\source\repos\Cars2D\Cars2D\bin\Debug\System.Numerics.Vectors.dll
+C:\Users\barti\source\repos\Cars2D\Cars2D\bin\Debug\System.Numerics.Vectors.xml
+C:\Users\barti\source\repos\Cars2D\Cars2D\obj\Debug\Cars2D.Form1.resources
+C:\Users\barti\source\repos\Cars2D\Cars2D\obj\Debug\Cars2D.csproj.CopyComplete
