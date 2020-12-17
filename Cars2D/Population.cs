@@ -4,28 +4,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
+using System.Drawing;
 
 namespace Cars2D
 {
     class Population
     {
+        float mutationRate = 0.01f;
         Random random = new Random();
         public List<Car> population = new List<Car>();
-        Vector2 target ;
         List<Car> matingPool = new List<Car>();
         public float bestfitness = 0;
         Car best;
 
         int quantity;
-        public Population(int quantity,float targetx,float targety,int startx,int starty)
+        public Population(float startx, float starty, float targetx,float targety,int quantity,int lifeTime,RectangleF collider)
         {
+            
             this.quantity = quantity;
-            target.X = targetx;
-            target.Y = targety;
 
             for (int i = 0; i < quantity; i++)
             {
-                population.Add(new Car(startx, starty,targetx,targety,200));
+                population.Add(new Car(startx, starty,targetx,targety,lifeTime,collider));
             }
         }
 
@@ -37,7 +37,7 @@ namespace Cars2D
                 if (c.fitness >= bestfitness)
                 {
                     bestfitness = c.fitness;
-                    best = new Car(c);
+                    best = c;
                     Console.WriteLine(bestfitness);
                 }
             }
@@ -55,12 +55,10 @@ namespace Cars2D
                     matingPool.Add(c);
                 }
             }
-            /*
-            for (int i = 0; i < (best.fitness * 1000); i++)
+            for (int i=0;i<best.fitness*100;i++)
             {
                 matingPool.Add(best);
             }
-            */
         }
         public void generate()
         {
@@ -71,7 +69,7 @@ namespace Cars2D
                 Car parent1 = matingPool[a];
                 Car parent2 = matingPool[b];
                 Car child = parent1.CrossOver(parent2);
-                child.mutation();
+                child.mutation(mutationRate);
                 population[i] = child;
 
             }

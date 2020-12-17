@@ -17,10 +17,14 @@ namespace Cars2D
         {
             InitializeComponent();
         }
-        static Target target = new Target(250,0);
-        float targetX=0;
-        float targetY=0;
+        float targetX=250;
+        float targetY=10;
         int popSize=50;
+        int lifeTime = 400;
+        float starty = 400;
+        float startx = 250;
+        RectangleF collider;
+        float cx,cy,ch,cw;
         private void panel1_Click(object sender, EventArgs e)
         {
 
@@ -28,31 +32,35 @@ namespace Cars2D
         Population population;
         private void go ()
         {
-            population = new Population(popSize, targetX, targetY, 250, 250);
+            cx = 150;
+            cy = 200;
+            cw = 200;
+            ch = 20;
+            collider = new RectangleF(cx, cy, cw, ch);
+            SolidBrush sbr = new SolidBrush(Color.Red);
+            SolidBrush sb = new SolidBrush(Color.FromArgb(100, Color.Black));
+            Graphics g = panel1.CreateGraphics();
+            population = new Population(startx,starty,targetX,targetY,popSize,lifeTime,collider);
             while (true)
             {
-                SolidBrush sbr = new SolidBrush(Color.Red);
-                SolidBrush sb = new SolidBrush(Color.FromArgb(100, Color.Black));
-                Graphics g = panel1.CreateGraphics();
+
 
                 population.naturalSelection();
                 population.generate();
-                for (int i = 0; i < 200; i++)
+                for (int i = 0; i <lifeTime; i++)
                 {
-                    //Thread.Sleep(10);
-
                     g.Clear(Color.White);
                     foreach (Car c in population.population)
                     {
-
+                        sbr.Color = Color.Red;
                         g.FillEllipse(sbr, targetX, targetY, 10, 10);
                         var r = c.draw();
                         g.FillEllipse(sb, r);
                         c.update();
+                        sbr.Color = Color.Blue;
+                        g.FillRectangle(sbr, cx, cy, cw, ch);
                     }
-
                 }
-
             }
         }
         public  void showFitness()
@@ -69,11 +77,17 @@ namespace Cars2D
         private delegate void Mydelegate();
         private void button1_Click(object sender, EventArgs e)
         {
+            cx = 150;
+            cy = 200;
+            cw = 200;
+            ch = 20;
+            collider = new RectangleF(cx, cy, cw, ch);
+
             Graphics g = panel1.CreateGraphics();
             g.Clear(Color.White);
             if (targetXTextBox.Text == "")
             {
-                targetX = 10;
+                //targetX = 10;
             }
             else
             {
@@ -82,7 +96,7 @@ namespace Cars2D
             
             if (targetYTextBox.Text == "")
             {
-                targetY = 10;
+                //targetY = 10;
             }
             else
             {
@@ -90,7 +104,7 @@ namespace Cars2D
             }
             if (popSizeTextBox.Text == "")
             {
-                popSize = 50;
+                //popSize = 50;
             }
             else
             {
@@ -99,6 +113,8 @@ namespace Cars2D
 
             SolidBrush sb = new SolidBrush(Color.Red);
             g.FillEllipse(sb,targetX,targetY,10,10);
+            sb.Color = Color.Blue;
+            g.FillRectangle(sb, cx, cy, cw ,ch);
         }
         Thread t;
         private void button2_Click(object sender, EventArgs e)

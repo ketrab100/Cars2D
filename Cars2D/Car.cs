@@ -11,75 +11,86 @@ namespace Cars2D
 {
     class Car
     {
-        double mutationRate;
+        bool crashed;
+        bool onTarget;
+        float startx, starty;
+        float xmax, ymax, xmin, ymin;
         public float fitness;
         int lifeTime;
         int time=0;
+        RectangleF collider;
         List<Vector2> dna = new List<Vector2>();
         public Vector2 target=new Vector2(0,0);
         public Vector2 position = new Vector2(0,0);
-        Vector2 velocity = new Vector2();
-        Vector2 accerelation = new Vector2();
-        Vector2 force = new Vector2();
+        public Vector2 velocity = new Vector2();
+        public Vector2 accerelation = new Vector2();
+        public Vector2 force = new Vector2();
+
         static Random random = new Random();
         private static readonly object syncLock = new object();
-        float xmax, ymax, xmin, ymin;
+        
 
-        public Car(float x,float y,float targetx, float targety,int lifeTime)
+        public Car(float startx,float starty,float targetx, float targety,int lifeTime,RectangleF collider)
         {
+            crashed = false;
             xmax = 490;
             ymax = 490;
             xmin = 0;
             ymin = 0;
-            mutationRate = 0.001;
+            this.collider = collider;
             this.lifeTime = lifeTime;
             this.target = new Vector2(targetx,targety);
-            position.X = 250;
-            position.Y = 250;
+            this.startx = startx;
+            this.starty = starty;
+            position.X = startx;
+            position.Y = starty;
             RandomInitialization();
-        }
-        public Car(Car c)
-        {
-
-            this.mutationRate = c.mutationRate;
-            this.fitness = c.fitness;
-            this.lifeTime = c.lifeTime;
-            this.dna = c.dna;
-            this.target = c.target;
-            this.xmax = c.xmax;
-            this.xmin = c.xmin;
-            this.ymax = c.ymax;
-            this.ymin = c.ymin;
-
         }
 
         public void update()
         {
-            if(position.X<=xmax && position.X >= xmin && position.Y <= ymax && position.Y >= ymin)
+            if (position.X > xmax || position.X < xmin || position.Y > ymax || position.Y < ymin)
+            {
+                crashed = true;
+            }
+            if (collider.Contains(position.X, position.Y))
+            {
+                crashed = true;
+            }
+            if(!crashed)
             {
                 force = dna[time];
                 position = Vector2.Add(position, velocity);
                 velocity =  Vector2.Add(velocity, accerelation);
-                accerelation = Vector2.Add(accerelation, force);
-                /*
-                position.X = Math.Min(position.X , 490);
-                position.Y = Math.Min(position.Y , 490);
-                position.X = Math.Max(position.X, 0);
-                position.Y = Math.Max(position.Y, 0);
-                */
-               
+                accerelation = Vector2.Add(accerelation, force);             
             }
             time++;
-
         }
         public void calcDistance()
         {
             double distance = 0;
             Vector2 w = new Vector2(position.X-target.X, position.Y-target.Y);
             distance = Math.Sqrt(Math.Pow(w.X, 2) + Math.Pow(w.Y, 2));
-            fitness = 1/((float)(distance+0.01));
-            fitness =(float) Math.Pow(fitness, 0.5);
-            fitness = (float)Math.Sqrt(fitness);
+            if (distance <= 2)
+            {
+                fitness = 1f*10;
+                onTarget = true;
+            }
+            else
+            {
+                if (crashed)
+                {
+                    fitness = 1 / ((float)(distance));
+                    fitness = (float)Math.Sqrt(fitness)/10;
+                }
+                else
+                {
+                    fitness = 1 / ((float)(distance));
+                    fitness = (float)Math.Sqrt(fitness);
+                }
+
+            }
+
         }
         public Rectangle draw()
         {
@@ -115,7 +126,7 @@ namespace Cars2D
 
         public Car CrossOver(Car parent)
         {
-            Car child= new Car(250,480,target.X,target.Y,lifeTime);
+            Car child= new Car(this.startx,this.starty,target.X,target.Y,lifeTime,collider);
             int mid = RandomNumber(1, lifeTime - 1);
             for (int i = 0;i < lifeTime;i++)
             {
@@ -131,7 +142,7 @@ namespace Cars2D
             return child;
         }
 
-        public void mutation()
+        public void mutation(float mutationRate)
         {
             for (int i = 0; i < lifeTime; i++)
             {
@@ -139,8 +150,8 @@ namespace Cars2D
                 double a = random.NextDouble();
                 if (a<mutationRate)
                 {
-                    float x = (float)random.NextDouble() / 100;
-                    float y = (float)random.NextDouble() / 100;
+                    float x = (float)random.NextDouble() / 500;
+                    float y = (float)random.NextDouble() / 500;
                     double c = random.NextDouble();
                     double b = random.NextDouble();
                     if (c < 0.5)
