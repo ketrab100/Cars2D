@@ -13,7 +13,7 @@ namespace Cars2D
         public List<Car> population = new List<Car>();
         Vector2 target ;
         List<Car> matingPool = new List<Car>();
-        float bestfitness = 0;
+        public float bestfitness = 0;
         Car best;
 
         int quantity;
@@ -55,10 +55,12 @@ namespace Cars2D
                     matingPool.Add(c);
                 }
             }
+            /*
             for (int i = 0; i < (best.fitness * 1000); i++)
             {
                 matingPool.Add(best);
             }
+            */
         }
         public void generate()
         {
