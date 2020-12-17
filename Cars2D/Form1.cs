@@ -17,24 +17,63 @@ namespace Cars2D
         {
             InitializeComponent();
         }
-        Car car = new Car(100, 100);
+        static Target target = new Target(250,0);
+        float targetX=0;
+        float targetY=0;
         private void panel1_Click(object sender, EventArgs e)
         {
-            Pen pen = new Pen(Color.Green);
-            SolidBrush sb = new SolidBrush(Color.Black);
-            Graphics g = panel1.CreateGraphics();
-
-            for (int i=0;i<100;i++)
+            Population population = new Population(100, targetX,targetY,250, 250);
+            while (true)
             {
-                var r = car.draw();
-                g.FillEllipse(sb,r);
-                Thread.Sleep(50);
-                car.update();
-                g.Clear(Color.White);
-            }
-            var ra = car.draw();
-            g.FillEllipse(sb, ra);
+                SolidBrush sbr = new SolidBrush(Color.Red);
+                SolidBrush sb = new SolidBrush(Color.FromArgb(100, Color.Black));
+                Graphics g = panel1.CreateGraphics();
 
+                population.naturalSelection();
+                population.generate();
+                for (int i = 0; i < 200; i++)
+                {
+                    //Thread.Sleep(10);
+
+                    g.Clear(Color.White);
+                    foreach (Car c in population.population)
+                    {
+                        
+                        g.FillEllipse(sbr, targetX, targetY, 10, 10);
+                        var r = c.draw();
+                        g.FillEllipse(sb, r);
+                        c.update();
+                    }
+
+                }
+            }
+        }
+        
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Graphics g = panel1.CreateGraphics();
+            g.Clear(Color.White);
+            if (targetXTextBox.Text == "")
+            {
+                targetX = 10;
+            }
+            else
+            {
+                targetX = (float)Convert.ToDouble(targetXTextBox.Text);
+            }
+            
+            if (targetYTextBox.Text == "")
+            {
+                targetY = 10;
+            }
+            else
+            {
+                targetY = (float)Convert.ToDouble(targetYTextBox.Text);
+            }
+            
+            
+            SolidBrush sb = new SolidBrush(Color.Red);
+            g.FillEllipse(sb,targetX,targetY,10,10);
         }
     }
 }
