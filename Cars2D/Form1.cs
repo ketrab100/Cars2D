@@ -19,19 +19,24 @@ namespace Cars2D
         }
         float targetX=250;
         float targetY=10;
-        int popSize=50;
-        int lifeTime = 400;
-        float starty = 400;
-        float startx = 250;
+        int popSize=100;
+        int lifeTime = 200;
+        float starty = 115;
+        float startx = 115;
         RectangleF collider;
         float cx,cy,ch,cw;
         private void panel1_Click(object sender, EventArgs e)
         {
 
         }
-        Population population;
+        Population1 population;
         private void go ()
         {
+            List<RectangleF> tor = new List<RectangleF>();
+            tor.Add(new RectangleF(100, 100, 200, 50));
+            tor.Add(new RectangleF(100, 100, 50, 200));
+            tor.Add(new RectangleF(250, 100, 50, 200));
+            tor.Add(new RectangleF(100, 250, 200, 50));
             cx = 150;
             cy = 200;
             cw = 200;
@@ -40,7 +45,7 @@ namespace Cars2D
             SolidBrush sbr = new SolidBrush(Color.Red);
             SolidBrush sb = new SolidBrush(Color.FromArgb(100, Color.Black));
             Graphics g = panel1.CreateGraphics();
-            population = new Population(startx,starty,targetX,targetY,popSize,lifeTime,collider);
+            population = new Population1(startx,starty,targetX,targetY,popSize,lifeTime,tor);
             while (true)
             {
 
@@ -50,15 +55,25 @@ namespace Cars2D
                 for (int i = 0; i <lifeTime; i++)
                 {
                     g.Clear(Color.White);
+                    sbr.Color = Color.Blue;
+                    foreach (RectangleF re in tor)
+                    {
+                        g.FillRectangle(sbr, re);
+                    }
                     foreach (Car c in population.population)
                     {
+                        
                         sbr.Color = Color.Red;
                         g.FillEllipse(sbr, targetX, targetY, 10, 10);
                         var r = c.draw();
                         g.FillEllipse(sb, r);
-                        c.update();
+                        c.move();
+
+
+                        /*
                         sbr.Color = Color.Blue;
                         g.FillRectangle(sbr, cx, cy, cw, ch);
+                        */
                     }
                 }
             }
@@ -69,7 +84,7 @@ namespace Cars2D
             {
                 maxFitnessTextBox.Text = population.bestfitness.ToString();
                 maxFitnessTextBox.Focus();
-                //Thread.Sleep(50);
+                Thread.Sleep(500);
             }
 
         }

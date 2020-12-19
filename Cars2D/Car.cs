@@ -11,6 +11,8 @@ namespace Cars2D
 {
     class Car
     {
+        public float distanece=0.01f;
+        bool canMove;
         bool crashed;
         bool onTarget;
         float startx, starty;
@@ -25,6 +27,8 @@ namespace Cars2D
         public Vector2 velocity = new Vector2();
         public Vector2 accerelation = new Vector2();
         public Vector2 force = new Vector2();
+
+        public List<RectangleF> tor = new List<RectangleF>();
 
         static Random random = new Random();
         private static readonly object syncLock = new object();
@@ -47,6 +51,26 @@ namespace Cars2D
             RandomInitialization();
         }
 
+        public Car(float startx, float starty, float targetx, float targety, int lifeTime, List<RectangleF> tor)
+        {
+            canMove = true;
+            crashed = false;
+            xmax = 490;
+            ymax = 490;
+            xmin = 0;
+            ymin = 0;
+            foreach(RectangleF r in tor)
+            {
+                this.tor.Add(r);
+            }
+            this.lifeTime = lifeTime;
+            this.target = new Vector2(targetx, targety);
+            this.startx = startx;
+            this.starty = starty;
+            position.X = startx;
+            position.Y = starty;
+            RandomInitialization();
+        }
         public void update()
         {
             if (position.X > xmax || position.X < xmin || position.Y > ymax || position.Y < ymin)
@@ -63,6 +87,42 @@ namespace Cars2D
                 position = Vector2.Add(position, velocity);
                 velocity =  Vector2.Add(velocity, accerelation);
                 accerelation = Vector2.Add(accerelation, force);             
+            }
+            time++;
+        }
+        public void move()
+        {
+            canMove = false;
+            foreach(RectangleF r in tor)
+            {
+                if (r.Contains(position.X, position.Y))
+                {
+                    canMove = true;
+                }
+            }
+            if (canMove)
+            {
+                force = dna[time];
+                Vector2 p = position;
+                position = Vector2.Add(position, velocity);
+                Vector2 w = new Vector2(position.X - p.X, position.Y - p.Y);
+
+                distanece += (float)Math.Sqrt(Math.Pow(w.X, 2) + Math.Pow(w.Y, 2));
+                //distanece = (float)Math.Sqrt(distanece);
+           
+                velocity = Vector2.Add(velocity, accerelation);
+                accerelation = Vector2.Add(accerelation, force);
+            }
+            if (time == lifeTime-1)
+            {
+                if (!canMove)
+                {
+                    distanece /= 10;
+                }
+                else
+                {
+                    distanece += 10;
+                }
             }
             time++;
         }
@@ -126,7 +186,7 @@ namespace Cars2D
 
         public Car CrossOver(Car parent)
         {
-            Car child= new Car(this.startx,this.starty,target.X,target.Y,lifeTime,collider);
+            Car child= new Car(this.startx,this.starty,target.X,target.Y,lifeTime,tor);
             int mid = RandomNumber(1, lifeTime - 1);
             for (int i = 0;i < lifeTime;i++)
             {
